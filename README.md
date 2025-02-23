@@ -1,64 +1,71 @@
 # Skin Cancer Detection
 
-
-
-### Docker Image: [https://hub.docker.com/r/conero007/skin-cancer-detection](https://hub.docker.com/repository/docker/keerrrthiv/gen-ai-exchange-hackathon-skin-cancer-detection-tool/general)
+## Docker Image
+[![Gen AI Exchange skin cancer AI](https://hub.docker.com/r/conero007/skin-cancer-detection)](https://hub.docker.com/repository/docker/keerrrthiv/gen-ai-exchange-hackathon-skin-cancer-detection-tool/general)
 
 ---
+
 ## Table of Contents
 * [Project Summary](#summary)
 * [Development Process](#process)
 * [Model Creation](#model)
-* [Website](#website)
-* [Deployment](#deploy)
-* [Refernces](#refernces)
+* [Website & Docker Image](#website)
+* [References](#references)
 
 ---
 
 ## Project Summary <a name="summary"></a>
-This tool takes the image of a mole as an input and calculates the probability of that mole being malign (Cancerous).
-Skin Cancer is a common disease these days.
-* A total of 18.1 million new cases and 9.6 million deaths from skin cancer were estimated globally in 2018.
-* A recent study on the epidemiology of skin cancer stated that in Europe, the incidence would increase to 40–50/100,000 inhabitants per year in the next decade. 
-* Studies from India report clinicopathological evaluation and also focus on the current scenarios of NMSCs
-* The estimated 5-year survival rate for patients whose melanoma is detected early is about 98 percent in the U.S. The survival rate falls to 62 percent when the disease reaches the lymph nodes and 18 percent when the disease metastasizes to distant organs.
-* Early detection is critical.
+This tool predicts the probability of a mole being malignant (cancerous) using image analysis. Skin cancer is a prevalent and life-threatening disease, with millions of new cases each year. Early detection significantly improves survival rates.
 
+### Key Statistics:
+- In 2018, 18.1 million new cases and 9.6 million deaths from skin cancer were reported globally.
+- Studies predict an increase in incidence rates in Europe to 40–50 cases per 100,000 people annually.
+- In India, research highlights clinicopathological evaluations and the current scenario of non-melanoma skin cancers (NMSCs).
+- The estimated 5-year survival rate for early-detected melanoma is 98%, but it drops to 62% when the disease spreads to lymph nodes and 18% when it metastasizes to distant organs.
+- Early detection is crucial for improving survival rates.
+
+---
 
 ## Development Process <a name="process"></a>
-This principle component of this project is a CNN model that can predict the probability of a pole being malign. 
+The core of this project is a Convolutional Neural Network (CNN) model that predicts the malignancy of a mole from an input image.
 
-Dataset: https://www.kaggle.com/kmader/skin-cancer-mnist-ham10000
+### Dataset:
+We used the [HAM10000 dataset](https://www.kaggle.com/kmader/skin-cancer-mnist-ham10000), which contains dermatoscopic images of pigmented skin lesions for classification.
 
-
+---
 
 ## Model Creation <a name="model"></a>
-Built the CNN model from scratch, the key features implemented in the model are:
-* **Conv2d** - All the convolutional layers have the same parameters except the input channel and output channel size.
-* **MaxPool2d** - Downsamples the input along its spatial dimensions (height and width) by taking the maximum value over an input window (of size defined by pool_size) for each channel of the input.
-* **BatchNormalization** - Used it to nullify the effect of an undesirable output from any specific layer by normalizing the values coming from the previous layer.
-* **Dropout** - It is used for a better generalization of a model as it turns off a percentage of neurons randomly during training, which results in a more generalized model.
-* **Flatten** - Used to turn the multi-dimensional output from the convolutional and max-pooling layers into one-dimensional tensor, to perform predictions.
+The CNN model was built from scratch with the following key components:
 
+- **Conv2D**: Convolutional layers with consistent parameters, except for varying input and output channels.
+- **MaxPool2D**: Reduces the spatial dimensions (height and width) by selecting the maximum value in a specified window.
+- **BatchNormalization**: Normalizes input to stabilize training and improve convergence.
+- **Dropout**: Randomly turns off a percentage of neurons during training to prevent overfitting and enhance generalization.
+- **Flatten**: Converts multi-dimensional outputs into a one-dimensional tensor for classification.
 
+---
 
 ## Website & Docker Image <a name="website"></a>
-Used the Flask framework in python for creating the backend of the website, and used HTML, CSS, and Bootstrap for the structure and designing of each page. The input is taken in as a file and is checked whether it is an image or not using the extension of the file. The image is firstly stored in the static folder which, after each refresh, empties itself, so any image uploaded will be lost after a refresh. After the image has been uploaded and stored, it will be processed so that it is compatible with our model, and then passed to the model for classification. The result from the model is then displayed on the same page using jinja2. As for any type of error, we have used Flask framework's Flash messages module for displaying that error to the user in a readable format.
+### Backend & Frontend:
+- **Backend:** Built using Flask.
+- **Frontend:** Developed with HTML, CSS, and Bootstrap for a responsive design.
+- **File Handling:** The system validates uploaded files as images before storing them in a temporary folder (`static/`). Images are deleted after a page refresh.
+- **Processing & Prediction:** Images are preprocessed before being passed to the model for classification. Results are displayed using Jinja2 templates.
+- **Error Handling:** Flask's Flash messages are used for user-friendly error notifications.
 
-After the website was created, we added the Dockerfile file to our directory for the purpose of creating a docker image of our project, we also had to modify our Flask code for it to run in a docker container. Since ports are dynamically allocated each time in a docker container we had to fetch the port, for our website to run on, at runtime. All that was left now was to build the docker image, test it for bugs and finally push the docker image on DockerHub.
+### Dockerization:
+- A **Dockerfile** was created to containerize the project.
+- Flask was configured to run within a Docker container, dynamically fetching the allocated port.
+- The final Docker image was built, tested for bugs, and pushed to [DockerHub](https://hub.docker.com/).
 
+## References <a name="references"></a>
+- [Python 3.9 Documentation](https://docs.python.org/3.9/)
+- [Docker for Python](https://docs.docker.com/language/python/)
+- [Flask Framework](https://flask.palletsprojects.com/en/2.0.x/)
+- [TensorFlow API Docs](https://www.tensorflow.org/api_docs/python/tf/all_symbols)
+- [Heroku Python Support](https://devcenter.heroku.com/categories/python-support)
 
+---
 
-## Deployment <a name="deploy"></a>
-
-For the deployment of our project, we chose Heroku for its free tier option and easy-to-understand procedure. Since we already had created the docker image of our project, we just needed to add one more file called heroku.yml which will tell our Heroku server which Dockerfile to build (Though we only have one Docker container here, this feature is useful when we have multiple Docker container and a docker-compose.yml) and now our project has all the files needed to be deployed on Heroku. Before pushing our website on Heroku, for it to be deployed as a container we first have to set the stack of our Heroku app to container mode. After that's done, all we need to do is push our application on Heroku and release it.
-
-
-
-## References <a name="refernces"></a>
-* https://docs.python.org/3.9/
-* https://docs.docker.com/language/python/
-* https://flask.palletsprojects.com/en/2.0.x/
-* https://www.tensorflow.org/api_docs/python/tf/all_symbols
-* https://devcenter.heroku.com/categories/python-support
+This project demonstrates how AI can assist in early skin cancer detection through deep learning and web-based deployment, making healthcare solutions more accessible.
 
